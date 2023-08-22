@@ -90,3 +90,19 @@ def show_user(username):
 
     return render_template("users/show.html", user=user, form=form)
 
+@app.route("/users/<username>/delete", methods=["POST"])
+def remove_user(username):
+    """Remove user and redirect to login"""
+
+    if "username" not in session or username != session['username']:
+        raise Unauthorized()
+    
+    user = User.query.get(username)
+    db.session.delete(user)
+    db.session.commit()
+    session.pop("username")
+
+    return redirect("/login")
+
+
+
